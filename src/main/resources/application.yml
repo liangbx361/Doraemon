@@ -32,3 +32,7 @@ server:
 
 image:
   path: /Users/lbx/Pictures/shop
+
+jwt:
+  secret-key: C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w
+  expiration-time: 60 * 60 * 24 * 7L

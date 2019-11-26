@@ -2,10 +2,7 @@ package com.wish.doraemon.dao.model;
 
 import lombok.Data;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -17,12 +14,19 @@ public class User {
      */
     @Id
     @GeneratedValue()
-    private String id;
+    private Integer id;
 
     /**
      * 用户名
      */
+    @Column(nullable = false)
     private String name;
+
+    /**
+     * 用户密码
+     */
+    @Column(nullable = false)
+    private String password;
 
     /**
      * 用户角色列表
