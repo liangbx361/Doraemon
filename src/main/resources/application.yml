@@ -1,0 +1,34 @@
+spring:
+
+  # 配置默认开发环境
+  profiles:
+    active: dev
+
+  # redis配置
+
+  # 静态资源配置
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+
+  #JPA 相关配置
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        # 显示SQL语句
+    show-sql: true
+
+  main:
+    allow-bean-definition-overriding: true
+
+server:
+  servlet:
+    context-path: /
+
+
+image:
+  path: /Users/lbx/Pictures/shop
