@@ -13,13 +13,13 @@ public class User {
      * 用户ID
      */
     @Id
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     /**
      * 用户名
      */
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     /**
@@ -31,6 +31,7 @@ public class User {
     /**
      * 用户角色列表
      */
+    @Column(nullable = false)
     @ElementCollection
     private List<String> roles;
 
