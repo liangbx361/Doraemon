@@ -32,7 +32,7 @@ public class User {
      * 用户角色列表
      */
     @Column(nullable = false)
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
 
     /**
