@@ -3,8 +3,10 @@ package com.wish.doraemon.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wish.doraemon.config.RestApiConfig;
 import com.wish.doraemon.dao.model.LoginUser;
+import com.wish.doraemon.dao.model.User;
 import com.wish.doraemon.security.jwt.JwtHandler;
 import com.wish.doraemon.security.jwt.JwtUser;
+import com.wish.doraemon.util.JsonMapperUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -62,8 +64,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain,
-                                            Authentication authentication) {
-
+                                            Authentication authentication) throws IOException {
         JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
         List<String> roles = jwtUser.getAuthorities()
             .stream()
@@ -73,6 +74,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = JwtHandler.getInstance().createToken(jwtUser.getUsername(), roles);
         // Http Response Header 中返回 Token
         response.setHeader(JwtHandler.TOKEN_HEADER, token);
+        // 返回User对象
+        User user = new User();
+        user.setName(jwtUser.getUsername());
+        user.setRoles(roles);
+        response.getWriter().write(JsonMapperUtil.objectMapToString(user));
     }
 
 

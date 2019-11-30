@@ -1,5 +1,6 @@
 package com.wish.doraemon.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -26,6 +27,7 @@ public class User {
      * 用户密码
      */
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     /**

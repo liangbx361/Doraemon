@@ -43,7 +43,7 @@ public class JwtHandler {
 
     public String createToken(String username, List<String> roles) {
         String tokenPrefix = Jwts.builder()
-            .setHeaderParam("typ", "JWT")
+            .setHeaderParam("typ", TOKEN_TYPE)
             .signWith(secretKey, SignatureAlgorithm.HS256)
             .claim("rol", String.join(",", roles))
             // 发行者
@@ -55,7 +55,7 @@ public class JwtHandler {
             .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME * 1000))
             .compact();
 
-        return "Bearer " + tokenPrefix;
+        return TOKEN_PREFIX + tokenPrefix;
     }
 
     public List<SimpleGrantedAuthority> getUserRolesByToken(String token) {
@@ -71,7 +71,7 @@ public class JwtHandler {
 
     private Claims getTokenBody(String token) {
         return Jwts.parser()
-            .setSigningKey(JWT_SECRET_KEY)
+            .setSigningKey(secretKey)
             .parseClaimsJws(token)
             .getBody();
     }

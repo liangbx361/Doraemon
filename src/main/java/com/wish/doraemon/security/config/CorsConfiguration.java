@@ -1,5 +1,6 @@
 package com.wish.doraemon.security.config;
 
+import com.wish.doraemon.security.jwt.JwtHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,7 +17,7 @@ public class CorsConfiguration implements WebMvcConfigurer {
             .allowedOrigins("*")
             // 暴露header中的其他属性给客户端应用程序
             // 如果不设置这个属性前端无法通过response header获取到Authorization也就是token
-            .exposedHeaders("Authorization")
+            .exposedHeaders(JwtHandler.TOKEN_HEADER)
             .allowCredentials(true)
             .allowedMethods("GET", "POST", "DELETE", "PUT")
             .maxAge(3600);
