@@ -1,0 +1,14 @@
+spring:
+
+  # 数据库配置
+  datasource:
+    url: jdbc:mysql://49.235.52.159:3306/doraemon?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: Lbx123456&
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# 日志配置
+logging:
+  file: /home/tomcat/log/doraemon.log
+  level:
+    web: DEBUG
