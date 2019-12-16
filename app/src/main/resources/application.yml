@@ -27,8 +27,7 @@ spring:
 
 server:
   servlet:
-    context-path: /
-
+    context-path: /doraemon/
 
 image:
   path: /Users/lbx/Pictures/shop

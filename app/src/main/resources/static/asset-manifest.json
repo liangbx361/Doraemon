@@ -1,0 +1,23 @@
+{
+  "vendors.css": "/doraemon/vendors.645e8751.chunk.css",
+  "vendors.js": "/doraemon/vendors.61e48fb5.async.js",
+  "layouts__BasicLayout.css": "/doraemon/layouts__BasicLayout.efca623f.chunk.css",
+  "layouts__BasicLayout.js": "/doraemon/layouts__BasicLayout.dda19593.async.js",
+  "layouts__SecurityLayout.js": "/doraemon/layouts__SecurityLayout.c8a1bcea.async.js",
+  "layouts__UserLayout.css": "/doraemon/layouts__UserLayout.4f7a0cab.chunk.css",
+  "layouts__UserLayout.js": "/doraemon/layouts__UserLayout.c0599eb9.async.js",
+  "p__404.js": "/doraemon/p__404.8194728c.async.js",
+  "p__Admin.js": "/doraemon/p__Admin.013fab52.async.js",
+  "p__Welcome.css": "/doraemon/p__Welcome.ae91ec30.chunk.css",
+  "p__Welcome.js": "/doraemon/p__Welcome.5de5bb17.async.js",
+  "p__user__login.css": "/doraemon/p__user__login.e0cecd6d.chunk.css",
+  "p__user__login.js": "/doraemon/p__user__login.00cf49ee.async.js",
+  "umi.css": "/doraemon/umi.45afc062.css",
+  "umi.js": "/doraemon/umi.ceb97677.js",
+  "favicon.png": "/doraemon/favicon.png",
+  "icons/icon-128x128.png": "/doraemon/icons/icon-128x128.png",
+  "icons/icon-192x192.png": "/doraemon/icons/icon-192x192.png",
+  "icons/icon-512x512.png": "/doraemon/icons/icon-512x512.png",
+  "index.html": "/doraemon/index.html",
+  "static/logo.png": "/doraemon/static/logo.cdb86ea2.png"
+}
