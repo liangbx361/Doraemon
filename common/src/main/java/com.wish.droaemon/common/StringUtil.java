@@ -1,6 +1,4 @@
-package com.wish.doraemon.user.util;
-
-import org.springframework.lang.Nullable;
+package com.wish.droaemon.common;
 
 /**
  * Title:
@@ -12,11 +10,11 @@ import org.springframework.lang.Nullable;
  */
 public class StringUtil {
 
-    public static boolean isEmpty(@Nullable String str) {
+    public static boolean isEmpty(String str) {
         return str == null || str.equals("");
     }
 
-    public static boolean isNotEmpty(@Nullable String str) {
+    public static boolean isNotEmpty(String str) {
         return !isEmpty(str);
     }
 }
