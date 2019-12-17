@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Table(name = "study_en_word", indexes = {@Index(columnList = "word")})
+@Entity
 @Data
 public class Word {
 
@@ -20,7 +21,7 @@ public class Word {
     private String word;
 
     /**
-     * 发音
+     * 音标
      */
     @Column(unique = true, length = 50)
     private String pronounce;
@@ -55,5 +56,5 @@ public class Word {
      */
     @Column()
     @Temporal(TemporalType.DATE)
-    private Data updateTime;
+    private Date updateTime;
 }

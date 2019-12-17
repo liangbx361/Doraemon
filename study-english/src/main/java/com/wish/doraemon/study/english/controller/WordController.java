@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/study-en/words")
+@RequestMapping("/api/v1/study-en/words")
 public class WordController {
 
     private final WordService wordService;
@@ -27,7 +27,7 @@ public class WordController {
 
     @GetMapping("")
     public Page<Word> queryByPage(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-                                               @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+                                  @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
         return wordService.queryByPage(pageNo, pageSize);
     }
 
