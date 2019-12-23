@@ -23,7 +23,7 @@ public class Word {
     /**
      * 音标
      */
-    @Column(unique = true, length = 50)
+    @Column(length = 50)
     private String pronounce;
 
     /**
