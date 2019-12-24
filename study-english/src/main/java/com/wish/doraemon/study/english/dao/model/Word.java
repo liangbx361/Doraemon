@@ -1,6 +1,7 @@
 package com.wish.doraemon.study.english.dao.model;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.Date;

@@ -45,9 +45,14 @@ public class WordController {
         return word;
     }
 
-    @GetMapping("/{id}")
-    public Word query(@PathVariable Integer id) {
-        return wordService.query(id);
+//    @GetMapping("/{id}")
+//    public Word query(@PathVariable Integer id) {
+//        return wordService.query(id);
+//    }
+
+    @GetMapping("/{name}")
+    public Word query(@PathVariable String name) {
+        return wordService.query(name);
     }
 
     @GetMapping("")

@@ -37,6 +37,15 @@ public class WordService {
         }
     }
 
+    public Word query(String name) {
+        Optional<Word> wordOptional = repository.findByWord(name);
+        if (wordOptional.isPresent()) {
+            return wordOptional.get();
+        } else {
+            throw new IllegalStateException("id not exit");
+        }
+    }
+
     public Page<Word> queryByPage(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         return repository.findAll(pageable);
@@ -45,7 +54,9 @@ public class WordService {
     public Word update(@PathVariable Integer id, Word word) {
         if (repository.existsById(id)) {
             word.setUpdateTime(new Date());
-            return repository.save(word);
+            repository.updateWord(word.getId(), word.getWord(), word.getPronounce(), word.getChinese(),
+                word.getExample(), word.getCategory(), word.getUpdateTime());
+            return word;
         } else {
             throw new IllegalStateException("id not exit");
         }
