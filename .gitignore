@@ -45,3 +45,5 @@ app/releaseServer/
 
 freeline*
 app/product/
+
+out/
