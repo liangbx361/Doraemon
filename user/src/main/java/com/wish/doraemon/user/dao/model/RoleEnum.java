@@ -18,7 +18,12 @@ public enum RoleEnum {
     /**
      * 测试
      */
-    TEST("test");
+    TEST("test"),
+
+    /**
+     * 英文学习
+     */
+    STUDY_EN("study-en");
 
     private String value;
 
