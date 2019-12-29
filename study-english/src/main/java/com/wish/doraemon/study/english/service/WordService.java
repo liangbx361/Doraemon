@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import javax.xml.crypto.Data;
 import java.util.Date;
 import java.util.Optional;
 
@@ -54,9 +53,12 @@ public class WordService {
     public Word update(@PathVariable Integer id, Word word) {
         if (repository.existsById(id)) {
             word.setUpdateTime(new Date());
-            repository.updateWord(word.getId(), word.getWord(), word.getPronounce(), word.getChinese(),
-                word.getExample(), word.getCategory(), word.getUpdateTime());
-            return word;
+            return repository.save(word);
+
+//            word.setUpdateTime(new Date());
+//            repository.update(word.getId(), word.getWord(), word.getPronounce(), word.getChinese(),
+//                word.getExample(), word.getCategory(), word.getUpdateTime());
+//            return word;
         } else {
             throw new IllegalStateException("id not exit");
         }

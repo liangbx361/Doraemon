@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/api/v1/study-en/words")
+@RequestMapping(Api.WORD)
 public class WordController {
 
     private final WordService wordService;
@@ -30,29 +30,24 @@ public class WordController {
 
     @PostMapping("")
     public Word create(@RequestBody Word word) {
-        String authorization = request.getHeader("Authorization");
-        String token = authorization.replace(JwtHandler.TOKEN_PREFIX, "");
-        String username = JwtHandler.getInstance().getUsernameByToken(token);
-        User user = userService.findUserByUserName(username);
-
         word = wordService.create(word);
 
-        UserWord userWord = new UserWord();
-        userWord.setUserId(user.getId());
-        userWord.setWord(word.getWord());
-        userWordService.create(userWord);
+//        String authorization = request.getHeader("Authorization");
+//        String token = authorization.replace(JwtHandler.TOKEN_PREFIX, "");
+//        String username = JwtHandler.getInstance().getUsernameByToken(token);
+//        User user = userService.findUserByUserName(username);
+//
+//        UserWord userWord = new UserWord();
+//        userWord.setUserId(user.getId());
+//        userWord.setWord(word.getWord());
+//        userWordService.create(userWord);
 
         return word;
     }
 
-//    @GetMapping("/{id}")
-//    public Word query(@PathVariable Integer id) {
-//        return wordService.query(id);
-//    }
-
-    @GetMapping("/{name}")
-    public Word query(@PathVariable String name) {
-        return wordService.query(name);
+    @GetMapping("/{id}")
+    public Word query(@PathVariable Integer id) {
+        return wordService.query(id);
     }
 
     @GetMapping("")

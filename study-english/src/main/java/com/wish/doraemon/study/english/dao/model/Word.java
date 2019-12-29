@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Table(name = "study_en_word", indexes = {@Index(columnList = "word")})
+@DynamicUpdate
 @Entity
 @Data
 public class Word {
@@ -18,7 +19,7 @@ public class Word {
     /**
      * 单词
      */
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, unique = true, length = 50, updatable = false)
     private String word;
 
     /**
@@ -49,13 +50,13 @@ public class Word {
      * 单词创建时间
      */
     @Column()
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
 
     /**
      * 更新数据的时间
      */
     @Column()
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date updateTime;
 }

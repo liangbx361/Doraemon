@@ -4,5 +4,4 @@ include 'app'
 include 'user'
 include 'common'
 include 'study-english'
-include 'test'
 
