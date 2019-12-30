@@ -10,11 +10,13 @@ import java.util.List;
 
 public class JwtUser implements UserDetails {
 
+    private Integer userId;
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public JwtUser(String username, String password, List<String> roles) {
+    public JwtUser(Integer userId, String username, String password, List<String> roles) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
 
@@ -27,6 +29,10 @@ public class JwtUser implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+    public Integer getUserId() {
+        return userId;
     }
 
     @Override

@@ -40,7 +40,7 @@ public class JwtHandler {
         secretKey = Keys.hmacShaKeyFor(apiKeySecretBytes);
     }
 
-    public String createToken(String username, List<String> roles) {
+    public String createToken(Integer userId, List<String> roles) {
         String tokenPrefix = Jwts.builder()
             .setHeaderParam("typ", TOKEN_TYPE)
             .signWith(secretKey, SignatureAlgorithm.HS256)
@@ -49,7 +49,7 @@ public class JwtHandler {
             .setIssuer("doraemon")
             .setIssuedAt(new Date())
             // 科目
-            .setSubject(username)
+            .setSubject(userId.toString())
             // 过期时间
             .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME * 1000))
             .compact();
@@ -64,7 +64,7 @@ public class JwtHandler {
             .collect(Collectors.toList());
     }
 
-    public String getUsernameByToken(String token) {
+    public String getUserId(String token) {
         return getTokenBody(token).getSubject();
     }
 

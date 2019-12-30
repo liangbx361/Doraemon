@@ -14,8 +14,8 @@ class WordControllerTest extends CrudControllerTest<Word> {
     }
 
     @Override
-    protected String getRestApi() {
-        return Api.WORD;
+    protected String getRestfulApiPath() {
+        return StudyEnApiPath.WORD;
     }
 
     @Test

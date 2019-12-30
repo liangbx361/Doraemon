@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/study-en/user-word")
+@RequestMapping(StudyEnApiPath.USER_WORd)
 public class UserWordController {
 
     private final UserWordService userWordService;
@@ -27,7 +27,7 @@ public class UserWordController {
 
     @GetMapping("")
     public Page<UserWord> queryByPage(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-                                               @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+                                      @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
         return userWordService.queryByPage(pageNo, pageSize);
     }
 
@@ -39,5 +39,14 @@ public class UserWordController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         userWordService.delete(id);
+    }
+
+    @PostMapping("/{id}/review")
+    public UserWord review(@PathVariable Integer id,
+                           @RequestParam(name = "readLevel") Integer readLevel,
+                           @RequestParam(name = "listenLevel") Integer listenLevel,
+                           @RequestParam(name = "speakLevel") Integer speakLevel,
+                           @RequestParam(name = "writeLevel") Integer writeLevel) {
+        return userWordService.review(id, readLevel, listenLevel, speakLevel, writeLevel);
     }
 }

@@ -22,8 +22,8 @@ public class SwaggerConfigurer {
 
     @Bean
     public Docket buildDocket() {
-        Predicate<RequestHandler> selector1 = RequestHandlerSelectors.basePackage("com.wish.doraemon.user.com.wish.doraemon.study.english.controller");
-        Predicate<RequestHandler> selector2 = RequestHandlerSelectors.basePackage("com.wish.doraemon.study.english.com.wish.doraemon.study.english.controller");
+        Predicate<RequestHandler> selector1 = RequestHandlerSelectors.basePackage("com.wish.doraemon.user.controller");
+        Predicate<RequestHandler> selector2 = RequestHandlerSelectors.basePackage("com.wish.doraemon.study.english.controller");
 
         return new Docket(DocumentationType.SWAGGER_2)
             .apiInfo(buildApiInfo())

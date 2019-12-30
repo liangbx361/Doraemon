@@ -16,11 +16,17 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
 
     protected abstract T createModel();
 
-    protected abstract String getRestApi();
+    protected abstract String getRestfulApiPath();
+
+    protected void doLogin() throws Exception {
+
+    }
 
     public abstract void testCrud() throws Exception;
 
     protected void executeCrud() throws Exception {
+        doLogin();
+
         T model = createModel();
 
         Integer id = create(model);
@@ -37,7 +43,7 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
         AtomicReference<Integer> id = new AtomicReference<>();
 
         getMockMvc().perform(
-            post(getRestApi())
+            post(getRestfulApiPath())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JSONObject.toJSONString(model))
                 .header("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2wiOiJhZG1pbiIsImlzcyI6ImRvcmFlbW9uIiwiaWF0IjoxNTc3NTQ4MTEyLCJzdWIiOiJhZG1pbiIsImV4cCI6MTU3ODE1MjkxMn0.haLPHIxUh6loKePBCMGaZER4gxDcI9hu8-SYeDq1kHU")
@@ -55,14 +61,14 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
 
     protected void read(Integer id) throws Exception {
         getMockMvc().perform(
-            get(getRestApi() + "/" + id)
+            get(getRestfulApiPath() + "/" + id)
         )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andReturn();
 
         getMockMvc().perform(
-            get(getRestApi() + "?pageNo=0&pageSize=10")
+            get(getRestfulApiPath() + "?pageNo=0&pageSize=10")
         )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -71,7 +77,7 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
 
     protected void update(Integer id, T model) throws Exception {
         getMockMvc().perform(
-            put(getRestApi() + "/" + id)
+            put(getRestfulApiPath() + "/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JSONObject.toJSONString(model))
         )
@@ -82,7 +88,7 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
 
     protected void remove(Integer id) throws Exception {
         getMockMvc().perform(
-            delete(getRestApi() + "/" + id)
+            delete(getRestfulApiPath() + "/" + id)
         )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())

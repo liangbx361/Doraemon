@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping(UserApiPath.USER)
 public class UserController {
 
     private final UserService userService;
@@ -32,7 +32,7 @@ public class UserController {
     public ResponseEntity<User> queryUser() {
         String authorization = request.getHeader("Authorization");
         String token = authorization.replace(JwtHandler.TOKEN_PREFIX, "");
-        String username = JwtHandler.getInstance().getUsernameByToken(token);
+        String username = JwtHandler.getInstance().getUserId(token);
         User user = userService.findUserByUserName(username);
         return ResponseEntity.ok().body(user);
     }

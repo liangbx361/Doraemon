@@ -35,6 +35,12 @@ public class Word {
     private String chinese;
 
     /**
+     * 图片
+     */
+    @Column
+    private String image;
+
+    /**
      * 例句
      */
     @Column()

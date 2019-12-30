@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         User user = userRepository.findByName(name)
             .orElseThrow(() -> new UsernameNotFoundException("No user found with username " + name));
-        return new JwtUser(user.getName(), user.getPassword(), user.getRoles());
+        return new JwtUser(user.getId(), user.getName(), user.getPassword(), user.getRoles());
     }
 
 }

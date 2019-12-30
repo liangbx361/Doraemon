@@ -1,6 +1,6 @@
 package com.wish.doraemon.user.security.config;
 
-import com.wish.doraemon.user.config.RestApiConfig;
+import com.wish.doraemon.user.controller.UserApiPath;
 import com.wish.doraemon.user.dao.model.RoleEnum;
 import com.wish.doraemon.user.security.exception.JwtAccessDeniedHandler;
 import com.wish.doraemon.user.security.exception.JwtAuthenticationEntryPoint;
@@ -73,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // 开启请求的权限校验
             .authorizeRequests()
             // 登录接口不需要权限
-            .antMatchers(HttpMethod.POST, RestApiConfig.AUTHORIZATION).permitAll()
+            .antMatchers(HttpMethod.POST, UserApiPath.ACCOUNT_LOGIN).permitAll()
             // 指定路径下的资源需要验证了的用户才能访问
             .antMatchers("/api/**").authenticated()
             // 需要管理员权限才能执行删除操作（TODO 需要区分用户和管理的删除权限）

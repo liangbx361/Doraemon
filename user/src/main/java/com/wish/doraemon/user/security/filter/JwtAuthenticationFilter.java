@@ -1,7 +1,7 @@
 package com.wish.doraemon.user.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wish.doraemon.user.config.RestApiConfig;
+import com.wish.doraemon.user.controller.UserApiPath;
 import com.wish.doraemon.user.dao.model.LoginUser;
 import com.wish.doraemon.user.dao.model.User;
 import com.wish.doraemon.user.security.jwt.JwtHandler;
@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
         // 设置URL，以确定是否需要身份验证
-        super.setFilterProcessesUrl(RestApiConfig.AUTHORIZATION);
+        super.setFilterProcessesUrl(UserApiPath.ACCOUNT_LOGIN);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.toList());
         // 创建 Token
-        String token = JwtHandler.getInstance().createToken(jwtUser.getUsername(), roles);
+        String token = JwtHandler.getInstance().createToken(jwtUser.getUserId(), roles);
         // Http Response Header 中返回 Token
         response.setHeader(JwtHandler.TOKEN_HEADER, token);
         // 返回User对象

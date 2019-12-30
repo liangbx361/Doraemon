@@ -55,7 +55,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         try {
             // 获取用户名
-            String username = JwtHandler.getInstance().getUsernameByToken(token);
+            String username = JwtHandler.getInstance().getUserId(token);
             if (StringUtils.isEmpty(username)) {
                 return null;
             }

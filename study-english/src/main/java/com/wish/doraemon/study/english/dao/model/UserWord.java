@@ -1,30 +1,39 @@
 package com.wish.doraemon.study.english.dao.model;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
+/**
+ * 用户学习单词的数据
+ * 等级定义（暂定）：
+ * 0 - 陌生（不认识）
+ * 1 - 认识（需要思考，但知道意思）
+ * 2 - 熟悉（不需要思考）
+ */
 @Table(name = "study_en_user_word")
+@DynamicUpdate
 @Entity
 @Data
 public class UserWord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
     private Integer id;
 
     /**
      * 用户ID
      */
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Integer userId;
 
     /**
      * 单词ID
      */
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Integer wordId;
 
     /**
@@ -34,10 +43,32 @@ public class UserWord {
     private String word;
 
     /**
-     * 熟悉等级（1-10级）
+     * 阅读能力
+     * 等级定义（暂定）：
+     * 0 - 陌生
+     * 1 - 认识（大概知道什么意思，但无法立刻知道）
+     * 2 - 熟悉
      */
     @Column
-    private int level;
+    private int readLevel;
+
+    /**
+     * 拼写能力
+     */
+    @Column
+    private int writeLevel;
+
+    /**
+     * 听力能力
+     */
+    @Column
+    private int listenLevel;
+
+    /**
+     * 发音能力
+     */
+    @Column
+    private int speakLevel;
 
     /**
      * 复习次数
@@ -58,12 +89,4 @@ public class UserWord {
     @Column
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastReviewTime;
-
-    /**
-     * 复习时间记录
-     */
-    @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<Date> reviewTimeRecords;
 }
