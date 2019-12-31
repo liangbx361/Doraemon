@@ -12,3 +12,6 @@ spring:
 #  file: ./log/rest.log
 #  level:
 #    web: DEBUG
+
+study-en:
+  voice: /Users/lbx/Music/word/

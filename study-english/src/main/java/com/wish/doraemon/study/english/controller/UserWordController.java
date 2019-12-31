@@ -41,7 +41,7 @@ public class UserWordController {
         userWordService.delete(id);
     }
 
-    @PostMapping("/{id}/review")
+    @PostMapping("/review/{id}")
     public UserWord review(@PathVariable Integer id,
                            @RequestParam(name = "readLevel") Integer readLevel,
                            @RequestParam(name = "listenLevel") Integer listenLevel,

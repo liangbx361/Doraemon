@@ -29,6 +29,12 @@ public class Word {
     private String pronounce;
 
     /**
+     * 声音
+     */
+    @Column
+    private String voice;
+
+    /**
      * 中文翻译
      */
     @Column()

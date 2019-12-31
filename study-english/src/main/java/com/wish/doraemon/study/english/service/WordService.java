@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Optional;
 
@@ -15,15 +16,33 @@ import java.util.Optional;
 public class WordService {
 
     private final WordRepository repository;
+    private final TtsService ttsService;
+    private final HttpServletRequest request;
 
-    public WordService(WordRepository repository) {
+    public WordService(WordRepository repository, TtsService ttsService, HttpServletRequest request) {
         this.repository = repository;
+        this.ttsService = ttsService;
+        this.request = request;
     }
 
     public Word create(Word word) {
+        if(repository.findByWord(word.getWord()).isPresent()) {
+            throw new IllegalStateException("the word " + word + "is exit");
+        }
+
         Date date = new Date();
         word.setCreateTime(date);
         word.setUpdateTime(date);
+
+        try {
+            ttsService.tts(word.getWord(), file -> {
+                word.setVoice(file.getName());
+                repository.save(word);
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return repository.save(word);
     }
 
