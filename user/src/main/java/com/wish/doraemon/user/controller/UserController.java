@@ -32,8 +32,8 @@ public class UserController {
     public ResponseEntity<User> queryUser() {
         String authorization = request.getHeader("Authorization");
         String token = authorization.replace(JwtHandler.TOKEN_PREFIX, "");
-        String username = JwtHandler.getInstance().getUserId(token);
-        User user = userService.findUserByUserName(username);
+        String userId = JwtHandler.getInstance().getUserId(token);
+        User user = userService.findById(userId);
         return ResponseEntity.ok().body(user);
     }
 

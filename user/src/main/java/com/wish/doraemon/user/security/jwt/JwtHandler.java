@@ -19,7 +19,7 @@ public class JwtHandler {
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String TOKEN_TYPE = "JWT";
     private static final String ROLE_CLAIMS = "rol";
-    private static final long EXPIRATION_TIME = 60 * 60 * 24 * 7L;
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7L;
 
     private static final String JWT_SECRET_KEY = "C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w";
 
@@ -51,7 +51,7 @@ public class JwtHandler {
             // 科目
             .setSubject(userId.toString())
             // 过期时间
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME * 1000))
+            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
             .compact();
 
         return TOKEN_PREFIX + tokenPrefix;

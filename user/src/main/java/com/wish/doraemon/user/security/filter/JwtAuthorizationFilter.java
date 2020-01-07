@@ -55,15 +55,15 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         try {
             // 获取用户名
-            String username = JwtHandler.getInstance().getUserId(token);
-            if (StringUtils.isEmpty(username)) {
+            String userId = JwtHandler.getInstance().getUserId(token);
+            if (StringUtils.isEmpty(userId)) {
                 return null;
             }
 
             // 获取用户角色
             List<SimpleGrantedAuthority> roles = JwtHandler.getInstance().getUserRolesByToken(token);
 
-            return new UsernamePasswordAuthenticationToken(username, null, roles);
+            return new UsernamePasswordAuthenticationToken(userId, null, roles);
         } catch (SignatureException | ExpiredJwtException | MalformedJwtException | IllegalArgumentException exception) {
             logger.warning("Request to parse JWT with invalid signature . Detail : " + exception.getMessage());
         }

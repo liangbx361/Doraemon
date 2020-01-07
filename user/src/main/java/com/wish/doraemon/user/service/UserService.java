@@ -38,13 +38,9 @@ public class UserService {
 //        userRepository.save(user);
     }
 
-    public User findUserByUserName(String name) {
-        return userRepository.findByName(name)
-            .orElseThrow(() -> new UsernameNotFoundException("No user found with username " + name));
-    }
-
-    public void deleteUserByUserName(String name) {
-        userRepository.deleteUserByName(name);
+    public User findById(String id) {
+        return userRepository.findById(Integer.valueOf(id))
+            .orElseThrow(() -> new UsernameNotFoundException("No user found with id " + id));
     }
 
     public Page<User> getAllUser(int pageNo, int pageSize) {
