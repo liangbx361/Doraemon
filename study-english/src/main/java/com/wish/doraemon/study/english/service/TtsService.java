@@ -42,9 +42,12 @@ public class TtsService {
         Request request = new Request.Builder().url(url).build();
         // 存放音频的文件
         File voiceFile = new File(voiceLocation, text + ".pcm");
-        if (!voiceFile.exists()) {
-            voiceFile.createNewFile();
+        if (voiceFile.exists()) {
+            callback.onSuccess(voiceFile);
+            return;
         }
+
+        voiceFile.createNewFile();
         FileOutputStream os = new FileOutputStream(voiceFile);
         WebSocket webSocket = client.newWebSocket(request, new WebSocketListener() {
             @Override
