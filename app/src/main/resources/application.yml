@@ -6,12 +6,6 @@ spring:
 
   # redis配置
 
-  # 静态资源配置
-  mvc:
-    static-path-pattern: /**
-  resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:/Users/lbx/Music/word/
-
   #JPA 相关配置
   jpa:
     properties:
@@ -28,9 +22,6 @@ spring:
 server:
   servlet:
     context-path: /doraemon/
-
-image:
-  path: /Users/lbx/Pictures/shop
 
 jwt:
   secret-key: C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w

@@ -7,8 +7,18 @@ spring:
     password: Lbx123456&
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  # 静态资源配置
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:/home/doraemon/word/
+
+
 # 日志配置
 logging:
-  file: /home/tomcat/log/doraemon.log
+  file: /home/doraemon/log/doraemon.log
   level:
     web: DEBUG
+
+study-en:
+  voice: /home/doraemon/word

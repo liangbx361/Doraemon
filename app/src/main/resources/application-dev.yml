@@ -7,6 +7,12 @@ spring:
     password: root123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  # 静态资源配置
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:/Users/lbx/Music/word/
+
 ## 日志配置
 #logging:
 #  file: ./log/rest.log
