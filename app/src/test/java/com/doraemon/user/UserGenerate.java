@@ -25,14 +25,14 @@ public class UserGenerate {
 //        userRepository.save(user);
 //    }
 
-    @Test
-    public void getPassword() {
-        String password = new BCryptPasswordEncoder().encode("123456");
-        System.out.println(password);
-    }
-
-    @Test
-    public void test() {
-
-    }
+//    @Test
+//    public void getPassword() {
+//        String password = new BCryptPasswordEncoder().encode("123456");
+//        System.out.println(password);
+//    }
+//
+//    @Test
+//    public void test() {
+//
+//    }
 }

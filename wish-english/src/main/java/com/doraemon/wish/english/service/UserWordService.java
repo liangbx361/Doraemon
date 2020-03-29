@@ -6,6 +6,7 @@ import com.doraemon.wish.english.dao.repository.UserWordRecordRepository;
 import com.doraemon.wish.english.dao.repository.UserWordRepository;
 import com.doraemon.user.util.StringUtil;
 import com.doraemon.user.util.UserUtil;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class UserWordService {
     private final UserWordRecordRepository recordRepository;
     private final HttpServletRequest request;
 
-    public UserWordService(UserWordRepository repository, UserWordRecordRepository recordRepository, HttpServletRequest request) {
+    public UserWordService(@Lazy UserWordRepository repository, UserWordRecordRepository recordRepository, HttpServletRequest request) {
         this.repository = repository;
         this.recordRepository = recordRepository;
         this.request = request;

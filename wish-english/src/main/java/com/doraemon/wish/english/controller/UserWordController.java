@@ -2,6 +2,7 @@ package com.doraemon.wish.english.controller;
 
 import com.doraemon.wish.english.dao.model.UserWord;
 import com.doraemon.wish.english.service.UserWordService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +12,7 @@ public class UserWordController {
 
     private final UserWordService userWordService;
 
-    public UserWordController(UserWordService userWordService) {
+    public UserWordController(@Lazy UserWordService userWordService) {
         this.userWordService = userWordService;
     }
 

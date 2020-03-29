@@ -2,6 +2,7 @@ package com.doraemon.wish.english.service;
 
 import com.doraemon.wish.english.dao.model.Word;
 import com.doraemon.wish.english.dao.repository.WordRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,7 @@ public class WordService {
     private final TtsService ttsService;
     private final HttpServletRequest request;
 
-    public WordService(WordRepository repository, TtsService ttsService, HttpServletRequest request) {
+    public WordService(@Lazy WordRepository repository, TtsService ttsService, HttpServletRequest request) {
         this.repository = repository;
         this.ttsService = ttsService;
         this.request = request;

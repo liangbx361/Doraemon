@@ -22,7 +22,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(@Lazy UserService userService, HttpServletRequest request, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, HttpServletRequest request, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.request = request;
         this.passwordEncoder = passwordEncoder;
