@@ -5,7 +5,7 @@ plugins {
     id 'war'
 }
 
-group = 'com.wish'
+group = 'com.doraemon'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     implementation project(":user")
-    implementation project(":study-english")
+//    implementation project(":wish-english")
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

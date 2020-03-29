@@ -3,5 +3,5 @@ rootProject.name = "doraemon"
 include 'app'
 include 'user'
 include 'common'
-include 'study-english'
+include 'wish-english'
 

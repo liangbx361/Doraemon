@@ -4,7 +4,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.wish'
+group = 'com.doraemon'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
@@ -22,9 +22,9 @@ repositories {
     mavenCentral()
 }
 
-//bootJar {
-//    enable = false
-//}
+bootJar {
+    enabled = false
+}
 
 jar {
     enabled = true
