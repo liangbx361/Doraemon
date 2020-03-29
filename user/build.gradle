@@ -44,6 +44,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    testImplementation project(':test')
 }
 
 test {

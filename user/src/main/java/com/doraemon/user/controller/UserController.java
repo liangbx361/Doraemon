@@ -1,10 +1,9 @@
 package com.doraemon.user.controller;
 
+import com.doraemon.user.dao.model.User;
 import com.doraemon.user.security.jwt.JwtHandler;
 import com.doraemon.user.service.UserService;
-import com.doraemon.user.dao.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

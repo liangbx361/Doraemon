@@ -3,6 +3,8 @@ package com.doraemon.test;
 import com.alibaba.fastjson.JSONObject;
 import com.doraemon.user.controller.UserApiPath;
 import com.doraemon.user.dao.model.LoginUser;
+import com.doraemon.user.dao.model.User;
+import com.doraemon.user.util.JsonMapperUtil;
 import org.json.JSONException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -17,6 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 public abstract class CrudControllerTest<T> extends BaseControllerTest {
 
+    private User mUser;
     private String mAuth;
 
     protected abstract T createModel();
@@ -33,6 +36,12 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(result -> mAuth = result.getResponse().getHeader("Authorization"));
+
+        getMockMvc().perform(get(UserApiPath.USER + "/current")
+            .header("Authorization", mAuth))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andDo(result -> mUser = JsonMapperUtil.stringMapToObject(result.getResponse().getContentAsString(), User.class));
     }
 
     protected abstract void testCrud() throws Exception;
@@ -114,5 +123,13 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
         Method method = model.getClass().getDeclaredMethod("setId", Integer.class);
         method.setAccessible(true);
         method.invoke(model, id);
+    }
+
+    public User getUser() {
+        return mUser;
+    }
+
+    public String getAuth() {
+        return mAuth;
     }
 }
