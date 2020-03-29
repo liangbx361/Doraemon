@@ -3,7 +3,7 @@ package com.doraemon.wish.english.controller;
 import com.doraemon.wish.english.service.IseService;
 import com.doraemon.wish.english.dao.model.VoiceEvaluation;
 import com.doraemon.wish.english.dao.model.XunFeiEvaluation;
-import com.wish.droaemon.common.JsonMapperUtil;
+import com.droaemon.common.util.JsonMapperUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

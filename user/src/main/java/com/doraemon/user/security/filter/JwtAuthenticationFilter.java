@@ -4,9 +4,9 @@ import com.doraemon.user.dao.model.LoginUser;
 import com.doraemon.user.dao.model.User;
 import com.doraemon.user.security.jwt.JwtHandler;
 import com.doraemon.user.security.jwt.JwtUser;
-import com.doraemon.user.util.JsonMapperUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.doraemon.user.controller.UserApiPath;
+import com.droaemon.common.util.JsonMapperUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -78,7 +78,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         User user = new User();
         user.setName(jwtUser.getUsername());
         user.setRoles(roles);
-        response.getWriter().write(JsonMapperUtil.objectMapToString(user));
+        response.getWriter().write(JsonMapperUtil.objectToString(user));
     }
 
 

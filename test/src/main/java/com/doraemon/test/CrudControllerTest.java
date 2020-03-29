@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.doraemon.user.controller.UserApiPath;
 import com.doraemon.user.dao.model.LoginUser;
 import com.doraemon.user.dao.model.User;
-import com.doraemon.user.util.JsonMapperUtil;
+import com.droaemon.common.util.JsonMapperUtil;
 import org.json.JSONException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -41,7 +41,7 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
             .header("Authorization", mAuth))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andDo(result -> mUser = JsonMapperUtil.stringMapToObject(result.getResponse().getContentAsString(), User.class));
+            .andDo(result -> mUser = JsonMapperUtil.stringToObject(result.getResponse().getContentAsString(), User.class));
     }
 
     protected abstract void testCrud() throws Exception;

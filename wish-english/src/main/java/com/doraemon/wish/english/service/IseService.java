@@ -1,6 +1,6 @@
 package com.doraemon.wish.english.service;
 
-import com.wish.droaemon.common.HttpUtil;
+import com.droaemon.common.util.HttpUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;

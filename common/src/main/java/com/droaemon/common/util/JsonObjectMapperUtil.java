@@ -1,4 +1,4 @@
-package com.wish.droaemon.common;
+package com.droaemon.common.util;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;

@@ -1,4 +1,4 @@
-package com.wish.droaemon.common;
+package com.droaemon.common.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
