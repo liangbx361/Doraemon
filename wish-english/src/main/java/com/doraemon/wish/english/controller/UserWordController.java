@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(StudyEnApiPath.USER_WORd)
+@RequestMapping(EnglishApiPath.USER_WORd)
 public class UserWordController {
 
     private final UserWordService userWordService;

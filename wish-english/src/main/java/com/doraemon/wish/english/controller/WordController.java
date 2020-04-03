@@ -6,7 +6,7 @@
 //import org.springframework.web.bind.annotation.*;
 //
 //@RestController
-//@RequestMapping(StudyEnApiPath.WORD)
+//@RequestMapping(EnglishApiPath.WORD)
 //public class WordController {
 //
 //    private final WordService wordService;

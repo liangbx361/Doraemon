@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping(StudyEnApiPath.EVALUATION)
+@RequestMapping(EnglishApiPath.EVALUATION)
 public class EvaluationController {
 
     private IseService iseService;

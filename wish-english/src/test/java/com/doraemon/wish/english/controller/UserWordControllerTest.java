@@ -23,7 +23,7 @@ public class UserWordControllerTest extends CrudControllerTest<UserWord> {
 
     @Override
     protected String getRestfulApiPath() {
-        return StudyEnApiPath.USER_WORd;
+        return EnglishApiPath.USER_WORd;
     }
 
     @Test
