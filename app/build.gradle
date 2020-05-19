@@ -19,10 +19,6 @@ configurations {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation project(":user")
     implementation project(":wish-english")

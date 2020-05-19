@@ -47,6 +47,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<User> queryUser(@PathVariable Integer id) {
         User user = userService.findById(id);
+        user.setPassword(null);
         return ResponseEntity.ok().body(user);
     }
 
@@ -55,6 +56,9 @@ public class UserController {
     public ResponseEntity<Page<User>> queryUsers(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
                                                  @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
         Page<User> users = userService.getAllUser(pageNo, pageSize);
+        for(User user : users.getContent()) {
+            user.setPassword(null);
+        }
         return ResponseEntity.ok().body(users);
     }
 
