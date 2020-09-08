@@ -1,0 +1,58 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+}
+
+group = 'com.doraemon'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(':common')
+    implementation project(":user")
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    implementation 'io.jsonwebtoken:jjwt-api:0.10.7'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.10.7'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.10.7'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.13'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    testImplementation project(':test')
+}
+
+test {
+    useJUnitPlatform()
+}
