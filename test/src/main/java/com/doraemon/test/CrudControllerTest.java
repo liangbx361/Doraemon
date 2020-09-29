@@ -54,15 +54,15 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
             throw new IllegalArgumentException("model 对象不能为空");
         }
 
-        Integer id = create(model);
+        Long id = create(model);
         setModelId(id, model);
         read(id);
         update(id, model);
         delete(id);
     }
 
-    protected Integer create(T model) throws Exception {
-        AtomicReference<Integer> id = new AtomicReference<>();
+    protected Long create(T model) throws Exception {
+        AtomicReference<Long> id = new AtomicReference<>();
 
         System.out.println(JSONObject.toJSONString(model));
 
@@ -81,7 +81,7 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
         return id.get();
     }
 
-    protected void read(Integer id) throws Exception {
+    protected void read(Long id) throws Exception {
         getMockMvc().perform(get(getRestfulApiPath() + "/" + id)
             .header("Authorization", mAuth))
             .andDo(MockMvcResultHandlers.print())
@@ -96,7 +96,7 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
             .andReturn();
     }
 
-    protected void update(Integer id, T model) throws Exception {
+    protected void update(Long id, T model) throws Exception {
         getMockMvc().perform(put(getRestfulApiPath() + "/" + id)
             .header("Authorization", mAuth)
             .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +106,7 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
             .andReturn();
     }
 
-    protected void delete(Integer id) throws Exception {
+    protected void delete(Long id) throws Exception {
         getMockMvc().perform(MockMvcRequestBuilders.delete(getRestfulApiPath() + "/" + id)
             .header("Authorization", mAuth))
             .andDo(MockMvcResultHandlers.print())
@@ -114,13 +114,13 @@ public abstract class CrudControllerTest<T> extends BaseControllerTest {
             .andReturn();
     }
 
-    protected Integer getModelId(String content) throws JSONException {
+    protected Long getModelId(String content) throws JSONException {
         org.json.JSONObject jsonObject = new org.json.JSONObject(content);
-        return Integer.valueOf(jsonObject.getString("id"));
+        return Long.valueOf(jsonObject.getString("id"));
     }
 
-    protected void setModelId(Integer id, T model) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        Method method = model.getClass().getDeclaredMethod("setId", Integer.class);
+    protected void setModelId(Long id, T model) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        Method method = model.getClass().getDeclaredMethod("setId", Long.class);
         method.setAccessible(true);
         method.invoke(model, id);
     }

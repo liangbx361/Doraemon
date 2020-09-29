@@ -1,5 +1,4 @@
 spring:
-
   # 配置默认开发环境
   profiles:
     active: dev
@@ -18,6 +17,11 @@ spring:
 
   main:
     allow-bean-definition-overriding: true
+
+  servlet:
+    multipart:
+      max-file-size: 4096MB
+      max-request-size: 4096MB
 
 server:
   servlet:

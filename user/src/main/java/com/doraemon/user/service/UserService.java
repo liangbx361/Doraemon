@@ -27,7 +27,7 @@ public class UserService {
         // 查找是否已存在相同用户名
         Optional<User> optionalUser = userRepository.findByName(user.getName());
         if (optionalUser.isPresent()) {
-            throw new UserNameAlreadyExistException("User name already exist! Please choose another user name");
+            throw new UserNameAlreadyExistException("User fileName already exist! Please choose another user fileName");
         }
 
         // 保存用户

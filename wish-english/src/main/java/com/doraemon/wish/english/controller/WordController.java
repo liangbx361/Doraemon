@@ -1,6 +1,6 @@
 //package com.wish.doraemon.study.english.controller;
 //
-//import com.wish.doraemon.study.english.dao.model.Word;
+//import com.wish.doraemon.study.english.com.doraemon.wish.practice.dao.model.Word;
 //import com.wish.doraemon.study.english.service.WordService;
 //import org.springframework.data.domain.Page;
 //import org.springframework.web.bind.annotation.*;
@@ -27,8 +27,8 @@
 //    }
 //
 //    @GetMapping("")
-//    public Page<Word> queryByPage(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-//                                  @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+//    public Page<Word> queryByPage(@RequestParam(fileName = "pageNo", defaultValue = "0") Integer pageNo,
+//                                  @RequestParam(fileName = "pageSize", defaultValue = "10") Integer pageSize) {
 //        return wordService.queryByPage(pageNo, pageSize);
 //    }
 //

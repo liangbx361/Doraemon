@@ -24,11 +24,12 @@ public class SwaggerConfigurer {
     public Docket buildDocket() {
         Predicate<RequestHandler> selector1 = RequestHandlerSelectors.basePackage("com.doraemon.user.controller");
         Predicate<RequestHandler> selector2 = RequestHandlerSelectors.basePackage("com.doraemon.wish.english.controller");
+        Predicate<RequestHandler> selector3 = RequestHandlerSelectors.basePackage("com.doraemon.wish.pack.controller");
 
         return new Docket(DocumentationType.SWAGGER_2)
             .apiInfo(buildApiInfo())
             .select()
-            .apis(Predicates.or(selector1, selector2))
+            .apis(Predicates.or(selector1, selector2, selector3))
             .paths(PathSelectors.any())
             .build()
             .enable(true);

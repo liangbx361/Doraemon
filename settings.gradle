@@ -8,4 +8,6 @@ include 'test'
 include 'wish-english'
 include 'wish-pack'
 include 'wish-shop'
+include 'wish-billing'
+include 'wish-practice'
 

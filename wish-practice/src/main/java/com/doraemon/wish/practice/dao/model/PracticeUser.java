@@ -25,6 +25,7 @@ public class PracticeUser {
      * User放弃关系维护
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
     @JoinColumn(name = "user_id")
     private List<PracticeContractInfo> contractInfos = new ArrayList<>();
 
