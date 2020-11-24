@@ -46,7 +46,7 @@ public class Channel {
     /**
      * 渠道参数配置，使用JSON格式
      */
-    @Column(nullable = true)
+    @Column(length = 2048)
     private String config;
 
     /**
@@ -60,21 +60,14 @@ public class Channel {
     /**
      * 渠道关联的插件ID
      */
+    @Deprecated
     @ElementCollection(fetch = FetchType.EAGER)
     @Column()
     private List<Long> pluginIds = new ArrayList<>();
 
-//    /**
-//     * 渠道关联的插件
-//     */
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Plugin.class)
-//    // 关系表
-//    @JoinTable(name = "pack_channel_plugin",
-//        // 当前表参与的外键
-//        joinColumns = {@JoinColumn(name = "channel_id", referencedColumnName = "id")},
-//        // 关联表参与的外键
-//        inverseJoinColumns = {@JoinColumn(name = "plugin_id", referencedColumnName = "id")}
-//    )
-//    private List<Plugin> plugins = new ArrayList<>();
-
+    /**
+     * 渠道插件配置
+     */
+    @Column(length = 2048)
+    private String pluginConfig;
 }

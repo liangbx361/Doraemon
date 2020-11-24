@@ -1,17 +1,13 @@
 package com.doraemon.wish.pack.controller;
 
-import com.doraemon.wish.pack.dao.model.Apk;
-import com.doraemon.wish.pack.dao.model.Channel;
-import com.doraemon.wish.pack.dao.model.Game;
-import com.doraemon.wish.pack.dao.model.Plugin;
-import com.doraemon.wish.pack.service.ApkService;
-import com.doraemon.wish.pack.service.ChannelService;
-import com.doraemon.wish.pack.service.GameService;
+import com.doraemon.wish.pack.dao.model.*;
+import com.doraemon.wish.pack.service.*;
 import com.droaemon.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,17 +16,23 @@ import java.util.List;
 @RequestMapping("/api/v1/pack/games")
 public class GameController {
 
+    private final HttpServletRequest request;
     private final GameService gameService;
     private final ChannelService channelService;
     private final ApkService apkService;
+    private final BuildApkService buildApkService;
+    private final BuildChildApkService buildChildApkService;
 
     @Value("${pack.apk-path}")
     private String apkPath;
 
-    public GameController(GameService gameService, ChannelService channelService, ApkService apkService) {
+    public GameController(HttpServletRequest request, GameService gameService, ChannelService channelService, ApkService apkService, BuildApkService buildApkService, BuildChildApkService buildChildApkService) {
+        this.request = request;
         this.gameService = gameService;
         this.channelService = channelService;
         this.apkService = apkService;
+        this.buildApkService = buildApkService;
+        this.buildChildApkService = buildChildApkService;
     }
 
     @PostMapping("")
@@ -174,6 +176,9 @@ public class GameController {
         if (StringUtil.isNotEmpty(newChannel.getType())) {
             oldChannel.setType(newChannel.getType());
         }
+        if(StringUtil.isNotEmpty(newChannel.getPluginConfig())) {
+            oldChannel.setPluginConfig(newChannel.getPluginConfig());
+        }
         if (newChannel.getPluginIds() != null) {
             System.out.println(newChannel.getPluginIds().size());
             oldChannel.setPluginIds(newChannel.getPluginIds());
@@ -198,5 +203,29 @@ public class GameController {
         game.getChannels().remove(deleteChannel);
         gameService.update(gameId, game);
         channelService.delete(channelId);
+    }
+
+    @GetMapping("/{gameId}/build-apk")
+    public Page<BuildApk> queryBuildApkByPage(@PathVariable Long gameId,
+                                              @RequestParam(name = "channelId", required = false) Long channelId,
+                                              @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                                              @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+
+        return buildApkService.queryByPage(gameId, channelId, pageNo, pageSize);
+    }
+
+    @GetMapping("/{gameId}/build-child-apk")
+    public Page<BuildChildApk> queryBuildChildApkByPage(@PathVariable Long gameId,
+                                                        @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                                                        @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+
+        Page<BuildChildApk> page = buildChildApkService.queryByPage(gameId, pageNo, pageSize);
+
+        for(BuildChildApk item : page.getContent()) {
+            String apkUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + "/doraemon/" + item.getApk();
+            item.setApk(apkUrl);
+        }
+
+        return page;
     }
 }

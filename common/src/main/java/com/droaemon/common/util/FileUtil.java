@@ -1,5 +1,6 @@
 package com.droaemon.common.util;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
@@ -114,6 +115,26 @@ public class FileUtil {
 			File dir = new File(dirPath);
 			if (!dir.exists()) {
 				dir.mkdirs();
+			}
+		}
+	}
+
+	public static void copy(File srcDir, File destDir) throws IOException {
+		if(srcDir.isFile()) {
+			FileUtils.copyFile(srcDir, destDir);
+			return;
+		}
+
+		File[] fileList = srcDir.listFiles();
+		if(fileList == null) {
+			return;
+		}
+
+		for(File file : fileList) {
+			if(file.isFile()) {
+				FileUtils.copyFileToDirectory(file, destDir);
+			} else {
+				FileUtils.copyDirectoryToDirectory(file, destDir);
 			}
 		}
 	}
