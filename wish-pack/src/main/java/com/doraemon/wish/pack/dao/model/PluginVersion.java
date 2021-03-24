@@ -21,6 +21,14 @@ public class PluginVersion {
     private Long id;
 
     /**
+     * 关联的插件
+     */
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "plugin_id")
+    @JsonIgnore
+    private Plugin plugin;
+
+    /**
      * 文件名
      */
     @Column(nullable = false)
@@ -33,11 +41,9 @@ public class PluginVersion {
     private String version;
 
     /**
-     * 关联的插件
+     * 描述
      */
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "plugin_id")
-    @JsonIgnore
-    private Plugin plugin;
+    @Column(nullable = false)
+    private String description;
 
 }

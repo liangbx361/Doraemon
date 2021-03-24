@@ -1,8 +1,11 @@
 package com.doraemon.wish.pack.dao.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,6 +15,7 @@ import java.util.List;
 @DynamicUpdate
 @Entity
 @Data
+@TypeDef(name = "json", typeClass = JsonStringType.class)
 public class Channel {
 
     @Id
@@ -58,6 +62,13 @@ public class Channel {
     private Game game;
 
     /**
+     * 关联的联运平台
+     */
+    @Type(type = "json")
+    @Column(columnDefinition = "json")
+    private GameHubGop gop;
+
+    /**
      * 渠道关联的插件ID
      */
     @Deprecated
@@ -70,4 +81,6 @@ public class Channel {
      */
     @Column(length = 2048)
     private String pluginConfig;
+
+
 }

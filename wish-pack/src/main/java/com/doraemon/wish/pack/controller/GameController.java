@@ -53,17 +53,32 @@ public class GameController {
 
     @PatchMapping("/{id}")
     public Game updateGameInfo(@PathVariable Long id,
-                               @RequestParam(name = "name", required = false) String name,
-                               @RequestParam(name = "code", required = false) String code) {
-        Game game = gameService.query(id);
-        if (StringUtil.isNotEmpty(name)) {
-            game.setName(name);
+                               @RequestBody Game game) {
+        Game oldGame = gameService.query(id);
+        if (StringUtil.isNotEmpty(game.getName())) {
+            oldGame.setName(game.getName());
         }
-        if (StringUtil.isNotEmpty(code)) {
-            game.setCode(code);
+        if (StringUtil.isNotEmpty(game.getCode())) {
+            oldGame.setCode(game.getCode());
         }
-        game = gameService.update(id, game);
-        return game;
+        if(StringUtil.isNotEmpty(game.getAppId())) {
+            oldGame.setAppId(game.getAppId());
+        }
+        if(StringUtil.isNotEmpty(game.getAppSecret())) {
+            oldGame.setAppSecret(game.getAppSecret());
+        }
+        if(StringUtil.isNotEmpty(game.getSdkIntegrationType())) {
+            oldGame.setSdkIntegrationType(game.getSdkIntegrationType());
+        }
+        if(game.getEtps() != null) {
+            oldGame.setEtps(game.getEtps());
+        }
+        if(game.getPlugins() != null) {
+            oldGame.setPlugins(game.getPlugins());
+        }
+
+        oldGame = gameService.update(id, oldGame);
+        return oldGame;
     }
 
     @DeleteMapping("/{id}")

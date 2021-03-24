@@ -2,6 +2,7 @@ package com.doraemon.wish.pack.dao.model;
 
 import com.doraemon.test.BaseTest;
 import com.doraemon.wish.pack.dao.repository.*;
+import org.hibernate.annotations.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,23 @@ public class ModelTest extends BaseTest {
         channelRepository.deleteAll();
         pluginRepository.deleteAll();
         pluginVersionRepository.deleteAll();
+    }
+
+    @Test
+    public void testJsonField() {
+        Game game = new Game();
+        game.setName("测试");
+        game.setCode("test");
+
+        GameHubPlugin gameHubPlugin = new GameHubPlugin();
+        gameHubPlugin.setParams("1");
+        gameHubPlugin.setClassName("com.u17173");
+        List<GameHubPlugin> plugins = new ArrayList<>();
+        plugins.add(gameHubPlugin);
+        game.setPlugins(plugins);
+
+        game = gameRepository.save(game);
+        gameRepository.delete(game);
     }
 
     @Test
@@ -69,9 +87,9 @@ public class ModelTest extends BaseTest {
         plugin.setName("g17173");
         pluginRepository.save(plugin);
 
-        // 渠道添加插件
-        channel.getPlugins().add(plugin);
-        channelRepository.save(channel);
+//        // 渠道添加插件
+//        channel.getPlugins().add(plugin);
+//        channelRepository.save(channel);
 
         // 添加插件版本
         PluginVersion version = new PluginVersion();

@@ -23,5 +23,7 @@ study-en:
   voice: /Users/lbx/Music/word/
 
 pack:
-  plugin-path: /Users/lbx/dev/temp/doraemon/plugin
-  apk-path: /Users/lbx/dev/temp/doraemon/apk
+  plugin-path: /Volumes/extend/doraemon/plugin
+  apk-path: /Volumes/extend/doraemon/apk
+  build-path: /Volumes/extend/doraemon/build
+  build-apk-path: /Volumes/extend/doraemon/build-apk

@@ -11,7 +11,7 @@ spring:
   mvc:
     static-path-pattern: /**
   resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:/Users/lbx/Music/word/,file:/Users/lbx/dev/temp/doraemon/plugin
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:/Users/lbx/Music/word/,file:/Users/lbx/dev/temp/doraemon/plugin,file:/Volumes/extend/doraemon/build-apk
 
 ## 日志配置
 #logging:
@@ -23,5 +23,7 @@ study-en:
   voice: /Users/lbx/Music/word/
 
 pack:
-  plugin-path: /Users/lbx/dev/temp/doraemon/plugin
-  apk-path: /Users/lbx/dev/temp/doraemon/apk
+  plugin-path: /Volumes/extend/doraemon/plugin
+  apk-path: /Volumes/extend/doraemon/apk
+  build-path: /Volumes/extend/doraemon/build
+  build-apk-path: /Volumes/extend/doraemon/build-apk

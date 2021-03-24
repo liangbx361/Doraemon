@@ -25,6 +25,19 @@ public class Plugin {
     private String name;
 
     /**
+     * 插件类型
+     */
+    @Column(nullable = false)
+    private String type;
+
+
+    /**
+     * 插件类名（可选）
+     */
+    @Column
+    private String className;
+
+    /**
      * 版本列表
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
