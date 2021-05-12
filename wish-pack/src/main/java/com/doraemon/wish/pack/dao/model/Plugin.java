@@ -27,7 +27,7 @@ public class Plugin {
     /**
      * 插件类型
      */
-    @Column(nullable = false)
+    @Column()
     private String type;
 
 

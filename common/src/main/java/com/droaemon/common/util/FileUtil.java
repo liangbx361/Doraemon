@@ -138,4 +138,8 @@ public class FileUtil {
 			}
 		}
 	}
+
+	public static void delteContent(File dir) throws IOException {
+		FileUtils.deleteDirectory(dir);
+	}
 }

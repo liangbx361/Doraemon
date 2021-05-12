@@ -43,7 +43,7 @@ public class PluginVersion {
     /**
      * 描述
      */
-    @Column(nullable = false)
+    @Column()
     private String description;
 
 }

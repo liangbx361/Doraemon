@@ -33,7 +33,8 @@ public class BuildTaskController {
         for(BuildTask item : taskPage.getContent()) {
             List<String> apkUrls = new ArrayList<>(item.getBuildApks().size());
             for(String apk : item.getBuildApks()) {
-                String apkUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + "/doraemon/" + apk;
+                String apkUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + "/doraemon/"
+                    + item.getGameId() + "/" + apk;
                 apkUrls.add(apkUrl);
             }
             item.setBuildApks(apkUrls);

@@ -53,10 +53,10 @@ public class ShellUtil {
     }
 
     public static String getFieldValue(String field) {
-        return field.substring(field.indexOf("=") + 2, field.length()-1);
+        return field.substring(field.indexOf("=") + 2, field.length() - 1);
     }
 
     public static String getLineValue(String line) {
-        return line.substring(line.indexOf(":") + 2, line.length()-1);
+        return line.substring(line.indexOf(":") + 2, line.length() - 1);
     }
 }

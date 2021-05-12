@@ -1,6 +1,7 @@
 package com.doraemon.wish.pack.controller;
 
 import com.doraemon.wish.pack.dao.model.*;
+import com.doraemon.wish.pack.model.ChannelEnum;
 import com.doraemon.wish.pack.service.*;
 import com.droaemon.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -150,12 +151,28 @@ public class GameController {
 
     @PostMapping("/{id}/channel")
     public Game createChannel(@PathVariable Long id, @RequestBody Channel channel) {
-        Game game = gameService.query(id);
+        addChannelClassName(channel);
 
+        Game game = gameService.query(id);
         game.getChannels().add(channel);
         game = gameService.update(id, game);
 
         return game;
+    }
+
+    private void addChannelClassName(Channel channel) {
+        switch (channel.getCode()) {
+            case ChannelEnum.C17173:
+                channel.setClassName(ChannelEnum.C17173_CLASS_NAME);
+                break;
+
+            case ChannelEnum.O17173:
+                channel.setClassName(ChannelEnum.O17173_CLASS_NAME);
+                break;
+
+            default:
+                break;
+        }
     }
 
     @GetMapping("/{gameId}/channel")
@@ -237,7 +254,8 @@ public class GameController {
         Page<BuildChildApk> page = buildChildApkService.queryByPage(gameId, pageNo, pageSize);
 
         for(BuildChildApk item : page.getContent()) {
-            String apkUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + "/doraemon/" + item.getApk();
+            String apkUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + "/doraemon/"
+                + item.getGameId() + "/" + item.getApk();
             item.setApk(apkUrl);
         }
 

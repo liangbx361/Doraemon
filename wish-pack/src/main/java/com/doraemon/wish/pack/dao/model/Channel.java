@@ -36,6 +36,12 @@ public class Channel {
     private String code;
 
     /**
+     * 渠道类名
+     */
+    @Column(nullable = false)
+    private String className;
+
+    /**
      * 渠道打包类型
      */
     @Column(nullable = false)

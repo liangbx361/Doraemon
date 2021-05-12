@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
@@ -75,41 +76,36 @@ public class BuildChildApkTaskService {
             saveStatus(task, BuildTask.Status.FAIL);
             return;
         }
+
         BuildApk buildApk = buildApkOptional.get();
-        File apkFile = new File(buildApkPath + File.separator + buildApk.getGameId().toString(), buildApk.getApk());
+        String gameApkPath = buildApkPath + File.separator + buildApk.getGameId().toString();
+        File motherApkFile = new File(gameApkPath, buildApk.getApk());
 
         // 构建子包
         try {
-            boolean success = ShellUtil.exec("g17173-pack -sign " + task.getSign() + " -id " + task.getChildId() + " -apk " + apkFile.getAbsolutePath());
-            if(!success) {
-                task.setStatus(BuildTask.Status.FAIL);
-                return;
-            }
+            ShellUtil.exec("g17173-pack -sign " + task.getSign()
+                + " -id " + task.getChildId()
+                + " -c " + gameApkPath
+                + " -apk " + motherApkFile.getAbsolutePath());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            taskRepository.save(task);
+            saveStatus(task, BuildTask.Status.FAIL);
             return;
         }
 
-        // 拷贝到指定目录
-        File childApkFile = new File(getFileName(apkFile.getName()) + "_" + task.getChildId() + ".apk");
+        // 判断是否生成成功
+        String motherFileName = getFileName(motherApkFile.getName(), ".apk");
+        String childApkName = motherFileName + "_" + task.getChildId() + ".apk";
+        File childApkFile = new File(gameApkPath, childApkName);
         if(!childApkFile.exists()) {
             saveStatus(task, BuildTask.Status.FAIL);
             return;
         }
-        File destApkFile = new File(buildApkPath + File.separator + buildApk.getGameId().toString(), childApkFile.getName());
-        try {
-            FileCopyUtils.copy(childApkFile, destApkFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-            saveStatus(task, BuildTask.Status.FAIL);
-        }
-        destApkFile.delete();
 
         BuildChildApk childApk = new BuildChildApk();
         childApk.setGameId(buildApk.getGameId());
         childApk.setApkId(buildApk.getId());
-        childApk.setApk(destApkFile.getName());
+        childApk.setApk(childApkFile.getName());
         childApk.setCreateTime(new Date());
         childApkRepository.save(childApk);
 
@@ -121,7 +117,8 @@ public class BuildChildApkTaskService {
         taskRepository.save(task);
     }
 
-    private String getFileName(String fileName) {
-        return fileName.substring(0, fileName.length()-4);
+    private String getFileName(String fileName, String suffix) {
+        int index = fileName.indexOf(suffix);
+        return fileName.substring(0, index);
     }
 }

@@ -36,6 +36,12 @@ public class Game {
     private String code;
 
     /**
+     * 环境
+     */
+    @Column(nullable = false)
+    private int env = 3;
+
+    /**
      * 发行分配的APP ID
      */
     @Column(nullable = false, unique = true)
@@ -86,4 +92,9 @@ public class Game {
     @Column(columnDefinition = "json")
     private List<GameHubPlugin> plugins = new ArrayList<>();
 
+    /**
+     * 启用调试
+     */
+    @Column()
+    private Boolean debug;
 }
