@@ -1,7 +1,10 @@
 package com.doraemon.wish.pack.controller;
 
+import com.doraemon.wish.pack.dao.model.BuildChildApk;
 import com.doraemon.wish.pack.dao.model.BuildChildApkTask;
 import com.doraemon.wish.pack.service.BuildChildApkTaskService;
+import com.doraemon.wish.pack.util.UrlUtil;
+import com.droaemon.common.util.StringUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +30,16 @@ public class BuildChildApkTaskController {
     @GetMapping("")
     public Page<BuildChildApkTask> queryChildApkTaskByPage(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
                                                            @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-        return taskService.queryByPage(pageNo, pageSize);
+        Page<BuildChildApkTask> tasks = taskService.queryByPage(pageNo, pageSize);
+
+        for(BuildChildApkTask task : tasks.getContent()) {
+            if(StringUtil.isNotEmpty(task.getApk())) {
+                String apkUrl = UrlUtil.getApkUrl(request, task.getGameId(), task.getApk());
+                task.setApk(apkUrl);
+            }
+        }
+
+        return tasks;
     }
+
 }

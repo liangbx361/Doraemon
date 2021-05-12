@@ -13,9 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -109,6 +107,7 @@ public class BuildChildApkTaskService {
         childApk.setCreateTime(new Date());
         childApkRepository.save(childApk);
 
+        task.setApk(childApkFile.getName());
         saveStatus(task, BuildTask.Status.SUCCESS);
     }
 
