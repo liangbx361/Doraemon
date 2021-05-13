@@ -46,7 +46,6 @@ public class BuildApkTaskService {
     private String buildApkPath;
 
     private LinkedBlockingQueue<BuildApkTask> mBuildApkTaskQueue;
-    private Thread mLoopThread;
 
     public BuildApkTaskService(BuildApkTaskRepository buildApkTaskRepository, GameRepository gameRepository,
                                ChannelRepository channelRepository, PluginRepository pluginRepository,
@@ -92,7 +91,7 @@ public class BuildApkTaskService {
     }
 
     private void runLoopThread() {
-        mLoopThread = new Thread(() -> {
+        new Thread(() -> {
             while (true) {
                 System.out.println("mLoopThread -> loop");
                 try {
@@ -103,8 +102,7 @@ public class BuildApkTaskService {
                     e.printStackTrace();
                 }
             }
-        });
-        mLoopThread.start();
+        }).start();
     }
 
     /**
