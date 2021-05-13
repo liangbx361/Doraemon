@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
 public class BuildChildApkTaskService {
@@ -30,19 +32,39 @@ public class BuildChildApkTaskService {
     @Value("${pack.build-apk-path}")
     private String buildApkPath;
 
+    private LinkedBlockingQueue<BuildChildApkTask> mTaskQueue;
+
     public BuildChildApkTaskService(BuildChildApkTaskRepository taskRepository, BuildApkRepository apkRepository,
                                     BuildChildApkRepository childApkRepository) {
         this.taskRepository = taskRepository;
         this.apkRepository = apkRepository;
         this.childApkRepository = childApkRepository;
 
-        startBuildLoop();
+        mTaskQueue = new LinkedBlockingQueue<>();
+
+        loadHistoryTask();
+        runLoopThread();
+    }
+
+    private void loadHistoryTask() {
+        List<BuildChildApkTask> buildingTasks = taskRepository.findAllByStatusEquals(BuildApkTask.Status.BUILDING);
+        mTaskQueue.addAll(buildingTasks);
+        List<BuildChildApkTask> createTasks = taskRepository.findAllByStatusEquals(BuildApkTask.Status.CREATE);
+        mTaskQueue.addAll(createTasks);
     }
 
     public BuildChildApkTask create(BuildChildApkTask task) {
         task.setStatus(BuildApkTask.Status.CREATE);
         task.setCreateTime(new Date());
-        return taskRepository.save(task);
+        task = taskRepository.save(task);
+
+        try {
+            mTaskQueue.put(task);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return task;
     }
 
     public Page<BuildChildApkTask> queryByPage(Integer pageNo, Integer pageSize) {
@@ -50,19 +72,17 @@ public class BuildChildApkTaskService {
         return taskRepository.findAll(pageable);
     }
 
-    private void startBuildLoop() {
+    private void runLoopThread() {
         new Thread(() -> {
            while (true) {
-               System.out.println("run build child apk task loop");
-               Optional<BuildChildApkTask> taskOptional = taskRepository.findFirstByStatusEquals(BuildApkTask.Status.CREATE);
-               if(taskOptional.isPresent()) {
-                   runBuild(taskOptional.get());
-               } else {
-                   try {
-                       Thread.sleep(1000);
-                   } catch (InterruptedException e) {
-                       e.printStackTrace();
-                   }
+               System.out.println("Build child apk task -> loop");
+
+               try {
+                   BuildChildApkTask buildChildApkTask = mTaskQueue.take();
+                   runBuild(buildChildApkTask);
+                   System.out.println("Build child apk task -> runBuildTask");
+               } catch (InterruptedException e) {
+                   e.printStackTrace();
                }
            }
         }).start();

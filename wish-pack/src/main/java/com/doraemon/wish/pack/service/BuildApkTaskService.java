@@ -30,7 +30,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Service
 public class BuildApkTaskService {
 
-    private BuildApkTaskRepository buildApkTaskRepository;
+    private BuildApkTaskRepository taskRepository;
     private GameRepository gameRepository;
     private ChannelRepository channelRepository;
     private PluginRepository pluginRepository;
@@ -47,10 +47,10 @@ public class BuildApkTaskService {
 
     private LinkedBlockingQueue<BuildApkTask> mBuildApkTaskQueue;
 
-    public BuildApkTaskService(BuildApkTaskRepository buildApkTaskRepository, GameRepository gameRepository,
+    public BuildApkTaskService(BuildApkTaskRepository taskRepository, GameRepository gameRepository,
                                ChannelRepository channelRepository, PluginRepository pluginRepository,
                                BuildApkRepository buildApkRepository) {
-        this.buildApkTaskRepository = buildApkTaskRepository;
+        this.taskRepository = taskRepository;
         this.gameRepository = gameRepository;
         this.channelRepository = channelRepository;
         this.pluginRepository = pluginRepository;
@@ -63,16 +63,16 @@ public class BuildApkTaskService {
     }
 
     private void loadHistoryTask() {
-        List<BuildApkTask> buildingTasks = buildApkTaskRepository.findAllByStatusEquals(BuildApkTask.Status.BUILDING);
+        List<BuildApkTask> buildingTasks = taskRepository.findAllByStatusEquals(BuildApkTask.Status.BUILDING);
         mBuildApkTaskQueue.addAll(buildingTasks);
-        List<BuildApkTask> createTasks = buildApkTaskRepository.findAllByStatusEquals(BuildApkTask.Status.CREATE);
+        List<BuildApkTask> createTasks = taskRepository.findAllByStatusEquals(BuildApkTask.Status.CREATE);
         mBuildApkTaskQueue.addAll(createTasks);
     }
 
     public BuildApkTask create(BuildApkTask task) {
         task.setStatus(BuildApkTask.Status.CREATE);
         task.setCreateTime(new Date());
-        task =  buildApkTaskRepository.save(task);
+        task =  taskRepository.save(task);
 
         try {
             mBuildApkTaskQueue.put(task);
@@ -87,13 +87,13 @@ public class BuildApkTaskService {
 
     public Page<BuildApkTask> queryByPage(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id").descending());
-        return buildApkTaskRepository.findAll(pageable);
+        return taskRepository.findAll(pageable);
     }
 
     private void runLoopThread() {
         new Thread(() -> {
             while (true) {
-                System.out.println("mLoopThread -> loop");
+                System.out.println("Build apk task -> loop");
                 try {
                     BuildApkTask buildApkTask = mBuildApkTaskQueue.take();
                     System.out.println("mLoopThread -> runBuildTask");
@@ -238,7 +238,6 @@ public class BuildApkTaskService {
             try {
                 FileCopyUtils.copy(apkFile, destApkFile);
                 task.getBuildApks().add(destApkFile.getName());
-                buildApkTaskRepository.save(task);
             } catch (IOException e) {
                 e.printStackTrace();
                 setFailStatus(task, "文件拷贝失败");
@@ -256,7 +255,7 @@ public class BuildApkTaskService {
 
         // 任务成功
         task.setStatus(BuildApkTask.Status.SUCCESS);
-        buildApkTaskRepository.save(task);
+        taskRepository.save(task);
     }
 
     private void cleanBuildDir(String buildPath) {
@@ -329,12 +328,12 @@ public class BuildApkTaskService {
 
     private void updateBuildTaskStatus(BuildApkTask task, String status) {
         task.setStatus(status);
-        buildApkTaskRepository.save(task);
+        taskRepository.save(task);
     }
 
     private void setFailStatus(BuildApkTask task, String failReason) {
         task.setStatus(BuildApkTask.Status.FAIL);
         task.setFailReason(failReason);
-        buildApkTaskRepository.save(task);
+        taskRepository.save(task);
     }
 }
