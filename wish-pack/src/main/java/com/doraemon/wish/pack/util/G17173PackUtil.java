@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class G17173PackUtil {
 
-    public static boolean isPackSuccess() {
+    public static boolean isModifySuccess() {
         try {
             byte[] logBytes = FileUtil.read("input.log");
             String log = new String(logBytes);

@@ -12,7 +12,6 @@ import com.doraemon.wish.pack.util.PluginUtil;
 import com.droaemon.common.util.FileUtil;
 import com.droaemon.common.util.JsonMapperUtil;
 import com.droaemon.common.util.ShellUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -25,13 +24,13 @@ import org.springframework.util.FileCopyUtils;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
 public class BuildApkTaskService {
 
-    private BuildTaskRepository buildTaskRepository;
+    private BuildApkTaskRepository buildApkTaskRepository;
     private GameRepository gameRepository;
     private ChannelRepository channelRepository;
     private PluginRepository pluginRepository;
@@ -46,47 +45,66 @@ public class BuildApkTaskService {
     @Value("${pack.build-apk-path}")
     private String buildApkPath;
 
-    private Thread thread;
+    private LinkedBlockingQueue<BuildApkTask> mBuildApkTaskQueue;
+    private Thread mLoopThread;
 
-    public BuildApkTaskService(BuildTaskRepository buildTaskRepository, GameRepository gameRepository,
+    public BuildApkTaskService(BuildApkTaskRepository buildApkTaskRepository, GameRepository gameRepository,
                                ChannelRepository channelRepository, PluginRepository pluginRepository,
                                BuildApkRepository buildApkRepository) {
-        this.buildTaskRepository = buildTaskRepository;
+        this.buildApkTaskRepository = buildApkTaskRepository;
         this.gameRepository = gameRepository;
         this.channelRepository = channelRepository;
         this.pluginRepository = pluginRepository;
         this.buildApkRepository = buildApkRepository;
 
-        startBuildLoop();
+        mBuildApkTaskQueue = new LinkedBlockingQueue<>();
+
+        loadHistoryTask();
+        runLoopThread();
     }
 
-    public BuildTask create(BuildTask task) {
-        task.setStatus(BuildTask.Status.CREATE);
+    private void loadHistoryTask() {
+        List<BuildApkTask> buildingTasks = buildApkTaskRepository.findAllByStatusEquals(BuildApkTask.Status.BUILDING);
+        mBuildApkTaskQueue.addAll(buildingTasks);
+        List<BuildApkTask> createTasks = buildApkTaskRepository.findAllByStatusEquals(BuildApkTask.Status.CREATE);
+        mBuildApkTaskQueue.addAll(createTasks);
+    }
+
+    public BuildApkTask create(BuildApkTask task) {
+        task.setStatus(BuildApkTask.Status.CREATE);
         task.setCreateTime(new Date());
-        return buildTaskRepository.save(task);
+        task =  buildApkTaskRepository.save(task);
+
+        try {
+            mBuildApkTaskQueue.put(task);
+            System.out.println("mLoopThread -> add to queue");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        return task;
     }
 
-    public Page<BuildTask> queryByPage(Integer pageNo, Integer pageSize) {
+    public Page<BuildApkTask> queryByPage(Integer pageNo, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("id").descending());
-        return buildTaskRepository.findAll(pageable);
+        return buildApkTaskRepository.findAll(pageable);
     }
 
-    private void startBuildLoop() {
-        thread = new Thread(() -> {
+    private void runLoopThread() {
+        mLoopThread = new Thread(() -> {
             while (true) {
-                Optional<BuildTask> taskOption = buildTaskRepository.findFirstByStatusEquals(BuildTask.Status.CREATE);
-                if (taskOption.isPresent()) {
-                    runBuildTask(taskOption.get());
-                } else {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                System.out.println("mLoopThread -> loop");
+                try {
+                    BuildApkTask buildApkTask = mBuildApkTaskQueue.take();
+                    System.out.println("mLoopThread -> runBuildTask");
+                    runBuildTask(buildApkTask);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });
-        thread.start();
+        mLoopThread.start();
     }
 
     /**
@@ -94,12 +112,25 @@ public class BuildApkTaskService {
      * 2. 构建母包
      * 3. 上传母包到指定位置
      */
-    private void runBuildTask(BuildTask task) {
+    private void runBuildTask(BuildApkTask task) {
+        updateBuildTaskStatus(task, BuildApkTask.Status.BUILDING);
+
         for (Long channelId : task.getChannelIds()) {
             cleanBuildDir(buildPath);
 
-            Game game = gameRepository.findById(task.getGameId()).get();
-            Channel channel = channelRepository.findById(channelId).get();
+            Optional<Game> gameOptional = gameRepository.findById(task.getGameId());
+            if(!gameOptional.isPresent()) {
+                setFailStatus(task, "Game ID " + task.getGameId() + " 不存在");
+                return;
+            }
+            Game game = gameOptional.get();
+
+            Optional<Channel> channelOptional = channelRepository.findById(channelId);
+            if(!channelOptional.isPresent()) {
+                setFailStatus(task, "Channel ID " + channelId + " 不存在");
+                return;
+            }
+            Channel channel = channelOptional.get();
 
             GameHubConfig gameHubConfig = GameHubUtil.toConfig(game);
             gameHubConfig.gopId = channel.getCode();
@@ -111,23 +142,33 @@ public class BuildApkTaskService {
             packConfig.type = channel.getType();
             packConfig.packageName = channel.getPackageName();
 
-            PackPlugin packPlugin = new PackPlugin();
-            // 加入渠道插件配置 参数
+            PackPlugin packPlugin;
             try {
                 packPlugin = JsonMapperUtil.stringToObject(channel.getPluginConfig(), PackPlugin.class);
-                for(PackPlugin.Item item : packPlugin.items) {
-                    Plugin plugin = pluginRepository.findById(item.pluginId).get();
-                    PluginVersion pluginVersion;
-                    if(item.versionId == -1) {
-                        pluginVersion = PluginUtil.getLatestVersion(plugin);
-                    } else {
-                        pluginVersion = PluginUtil.getVersion(plugin, item.versionId);
-                    }
-                    item.name = pluginVersion.getFileName();
-                }
             } catch (IOException e) {
                 e.printStackTrace();
-                // plugin.json 配置转化失败
+                setFailStatus(task, "channel " + channel.getName() + " 配置序列化失败");
+                return;
+            }
+
+            for(PackPlugin.Item item : packPlugin.items) {
+                Optional<Plugin> pluginOptional = pluginRepository.findById(item.pluginId);
+                if(!pluginOptional.isPresent())  {
+                    setFailStatus(task, "plugin id " + item.pluginId + " 不存在");
+                    return;
+                }
+                Plugin plugin = pluginOptional.get();
+                PluginVersion pluginVersion;
+                if(item.versionId == -1) {
+                    pluginVersion = PluginUtil.getLatestVersion(plugin);
+                } else {
+                    pluginVersion = PluginUtil.getVersion(plugin, item.versionId);
+                }
+                if(pluginVersion == null) {
+                    setFailStatus(task, "plugin version " + item.versionId + " 不存在");
+                    return;
+                }
+                item.name = pluginVersion.getFileName();
             }
 
             // 加入GameHub配置
@@ -135,7 +176,7 @@ public class BuildApkTaskService {
             gameHubItem.name = "gamehub-config";
             packPlugin.items.add(gameHubItem);
 
-            // 加入GameHub插件和ETP配置
+            // TODO 加入GameHub插件和ETP配置
 
             // 加入渠道配置
             PackPlugin.Item channelItem = new PackPlugin.Item();
@@ -145,47 +186,52 @@ public class BuildApkTaskService {
             // 生成配置文件
             try {
                 createGamehubConfigFile(gameHubConfig, buildPath);
-            } catch (JsonProcessingException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-                // gamehub_init_config.json生成失败
+                setFailStatus(task, "gamehub-config生成失败");
+                return;
             }
+
             try {
                 createJsonFile(packConfig, "config.json");
-            } catch (JsonProcessingException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-                // config.json生成失败
+                setFailStatus(task, "config.json生成失败");
+                return;
             }
+
             try {
                 createJsonFile(packPlugin, "plugin.json");
-            } catch (JsonProcessingException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-                // plugin.json生成失败
+                setFailStatus(task, "plugin.json生成失败");
+                return;
             }
-            createChannelFile(channel, buildPath);
 
-            // 构建母包
+            try {
+                createChannelFile(channel, buildPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+                setFailStatus(task, "channel-config生成失败");
+                return;
+            }
+
+            // 构建
             String filePath = apkPath + File.separator + task.getApkName();
             try {
                 ShellUtil.exec("g17173-pack -m -apk " + filePath + " -c " + buildPath + " -pluginDir " + pluginDir);
-                if (G17173PackUtil.isPackSuccess()) {
-                    task.setStatus(BuildTask.Status.SUCCESS);
-                    buildTaskRepository.save(task);
-                } else {
-                    task.setStatus(BuildTask.Status.FAIL);
-                    buildTaskRepository.save(task);
+                if(!G17173PackUtil.isModifySuccess()) {
+                    setFailStatus(task, "构建失败");
                     return;
                 }
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
-                task.setStatus(BuildTask.Status.FAIL);
-                buildTaskRepository.save(task);
+                setFailStatus(task, "构建失败");
                 return;
             }
 
-            // 查找母包
+            // 查找母包是否存在
             File apkFile = findBuildApk();
-            System.out.println("构建母包：" + apkFile.getAbsolutePath());
-
             File deskApkDir = new File(buildApkPath, game.getId().toString());
             if (!deskApkDir.exists()) {
                 deskApkDir.mkdirs();
@@ -194,9 +240,11 @@ public class BuildApkTaskService {
             try {
                 FileCopyUtils.copy(apkFile, destApkFile);
                 task.getBuildApks().add(destApkFile.getName());
-                buildTaskRepository.save(task);
+                buildApkTaskRepository.save(task);
             } catch (IOException e) {
                 e.printStackTrace();
+                setFailStatus(task, "文件拷贝失败");
+                return;
             }
 
             // 保存构建的APk
@@ -207,6 +255,10 @@ public class BuildApkTaskService {
             buildApk.setApk(destApkFile.getName());
             buildApkRepository.save(buildApk);
         }
+
+        // 任务成功
+        task.setStatus(BuildApkTask.Status.SUCCESS);
+        buildApkTaskRepository.save(task);
     }
 
     private void cleanBuildDir(String buildPath) {
@@ -219,12 +271,12 @@ public class BuildApkTaskService {
         }
     }
 
-    private void createJsonFile(Object model, String fileName) throws JsonProcessingException {
+    private void createJsonFile(Object model, String fileName) throws IOException {
         String modelJson = JsonMapperUtil.objectToString(model);
         FileUtil.save(buildPath, fileName, modelJson.getBytes());
     }
 
-    private void createGamehubConfigFile(GameHubConfig config, String buildPath) throws JsonProcessingException {
+    private void createGamehubConfigFile(GameHubConfig config, String buildPath) throws IOException {
         File configDir = new File(buildPath, "gamehub-config");
         configDir.mkdir();
         File assetsDir = new File(configDir, "assets");
@@ -233,7 +285,7 @@ public class BuildApkTaskService {
         JsonUtil.modelToJsonFile(config, assetsDir.getAbsolutePath(), "gamehub_init_config.json");
     }
 
-    private void createChannelFile(Channel channel, String buildPath) {
+    private void createChannelFile(Channel channel, String buildPath) throws IOException {
         switch (channel.getCode()) {
             case "c17173":
                 createC17173File(channel, buildPath);
@@ -245,7 +297,7 @@ public class BuildApkTaskService {
         }
     }
 
-    private void createC17173File(Channel channel, String buildPath) {
+    private void createC17173File(Channel channel, String buildPath) throws IOException {
         File channelDir = new File(buildPath, "channel-config");
         channelDir.mkdir();
         File assetsDir = new File(channelDir, "assets");
@@ -253,7 +305,7 @@ public class BuildApkTaskService {
         FileUtil.save(assetsDir.getAbsolutePath(), "g17173_init_config.json", channel.getConfig().getBytes());
     }
 
-    private void createO17173File(Channel channel, String buildPath) {
+    private void createO17173File(Channel channel, String buildPath) throws IOException {
         File channelDir = new File(buildPath, "channel-config");
         channelDir.mkdirs();
         File assetsDir = new File(channelDir, "assets");
@@ -275,5 +327,16 @@ public class BuildApkTaskService {
         String time = timeFormat.format(new Date());
 
         return name + "_" + time + ".apk";
+    }
+
+    private void updateBuildTaskStatus(BuildApkTask task, String status) {
+        task.setStatus(status);
+        buildApkTaskRepository.save(task);
+    }
+
+    private void setFailStatus(BuildApkTask task, String failReason) {
+        task.setStatus(BuildApkTask.Status.FAIL);
+        task.setFailReason(failReason);
+        buildApkTaskRepository.save(task);
     }
 }

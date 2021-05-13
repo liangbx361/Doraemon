@@ -3,7 +3,7 @@ package com.doraemon.wish.pack.service;
 import com.doraemon.wish.pack.dao.model.BuildApk;
 import com.doraemon.wish.pack.dao.model.BuildChildApk;
 import com.doraemon.wish.pack.dao.model.BuildChildApkTask;
-import com.doraemon.wish.pack.dao.model.BuildTask;
+import com.doraemon.wish.pack.dao.model.BuildApkTask;
 import com.doraemon.wish.pack.dao.repository.BuildApkRepository;
 import com.doraemon.wish.pack.dao.repository.BuildChildApkRepository;
 import com.doraemon.wish.pack.dao.repository.BuildChildApkTaskRepository;
@@ -40,7 +40,7 @@ public class BuildChildApkTaskService {
     }
 
     public BuildChildApkTask create(BuildChildApkTask task) {
-        task.setStatus(BuildTask.Status.CREATE);
+        task.setStatus(BuildApkTask.Status.CREATE);
         task.setCreateTime(new Date());
         return taskRepository.save(task);
     }
@@ -54,7 +54,7 @@ public class BuildChildApkTaskService {
         new Thread(() -> {
            while (true) {
                System.out.println("run build child apk task loop");
-               Optional<BuildChildApkTask> taskOptional = taskRepository.findFirstByStatusEquals(BuildTask.Status.CREATE);
+               Optional<BuildChildApkTask> taskOptional = taskRepository.findFirstByStatusEquals(BuildApkTask.Status.CREATE);
                if(taskOptional.isPresent()) {
                    runBuild(taskOptional.get());
                } else {
@@ -71,7 +71,7 @@ public class BuildChildApkTaskService {
     private void runBuild(BuildChildApkTask task) {
         Optional<BuildApk> buildApkOptional = apkRepository.findById(task.getApkId());
         if(!buildApkOptional.isPresent()) {
-            saveStatus(task, BuildTask.Status.FAIL);
+            saveStatus(task, BuildApkTask.Status.FAIL);
             return;
         }
 
@@ -87,7 +87,7 @@ public class BuildChildApkTaskService {
                 + " -apk " + motherApkFile.getAbsolutePath());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            saveStatus(task, BuildTask.Status.FAIL);
+            saveStatus(task, BuildApkTask.Status.FAIL);
             return;
         }
 
@@ -96,7 +96,7 @@ public class BuildChildApkTaskService {
         String childApkName = motherFileName + "_" + task.getChildId() + ".apk";
         File childApkFile = new File(gameApkPath, childApkName);
         if(!childApkFile.exists()) {
-            saveStatus(task, BuildTask.Status.FAIL);
+            saveStatus(task, BuildApkTask.Status.FAIL);
             return;
         }
 
@@ -108,7 +108,7 @@ public class BuildChildApkTaskService {
         childApkRepository.save(childApk);
 
         task.setApk(childApkFile.getName());
-        saveStatus(task, BuildTask.Status.SUCCESS);
+        saveStatus(task, BuildApkTask.Status.SUCCESS);
     }
 
     private void saveStatus(BuildChildApkTask task, String status) {
