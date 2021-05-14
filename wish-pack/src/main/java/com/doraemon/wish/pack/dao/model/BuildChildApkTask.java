@@ -68,4 +68,10 @@ public class BuildChildApkTask {
      */
     @Column
     private String apk;
+
+    /**
+     * 子包路径
+     */
+    @Column
+    private String apkPath;
 }

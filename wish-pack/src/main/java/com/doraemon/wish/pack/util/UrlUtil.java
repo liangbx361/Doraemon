@@ -4,8 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 
 public class UrlUtil {
 
-    public static String getApkUrl(HttpServletRequest request, Long gameId, String apk) {
-        return getBaseUrl(request) + gameId + "/" + apk;
+    public static String getApkUrl(HttpServletRequest request, String path, String apk) {
+        return getBaseUrl(request) + path + "/" + apk;
     }
 
     public static String getBaseUrl(HttpServletRequest request) {

@@ -5,10 +5,7 @@ import com.doraemon.wish.pack.dao.repository.*;
 import com.doraemon.wish.pack.model.GameHubConfig;
 import com.doraemon.wish.pack.model.PackConfig;
 import com.doraemon.wish.pack.model.PackPlugin;
-import com.doraemon.wish.pack.util.G17173PackUtil;
-import com.doraemon.wish.pack.util.GameHubUtil;
-import com.doraemon.wish.pack.util.JsonUtil;
-import com.doraemon.wish.pack.util.PluginUtil;
+import com.doraemon.wish.pack.util.*;
 import com.droaemon.common.util.FileUtil;
 import com.droaemon.common.util.JsonMapperUtil;
 import com.droaemon.common.util.ShellUtil;
@@ -230,7 +227,9 @@ public class BuildApkTaskService {
 
             // 查找母包是否存在
             File apkFile = findBuildApk();
-            File deskApkDir = new File(buildApkPath, game.getId().toString());
+
+            File deskApkDir = new File(buildApkPath, game.getId().toString() + File.separator
+                + TimeUtil.getFormatTime(task.getCreateTime()));
             if (!deskApkDir.exists()) {
                 deskApkDir.mkdirs();
             }
@@ -248,7 +247,7 @@ public class BuildApkTaskService {
             BuildApk buildApk = new BuildApk();
             buildApk.setGameId(game.getId());
             buildApk.setChannelId(channel.getId());
-            buildApk.setCreateTime(new Date());
+            buildApk.setCreateTime(task.getCreateTime());
             buildApk.setApk(destApkFile.getName());
             buildApkRepository.save(buildApk);
         }

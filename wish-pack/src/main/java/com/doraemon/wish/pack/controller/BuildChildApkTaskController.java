@@ -34,7 +34,7 @@ public class BuildChildApkTaskController {
 
         for(BuildChildApkTask task : tasks.getContent()) {
             if(StringUtil.isNotEmpty(task.getApk())) {
-                String apkUrl = UrlUtil.getApkUrl(request, task.getGameId(), task.getApk());
+                String apkUrl = UrlUtil.getApkUrl(request, task.getApkPath(), task.getApk());
                 task.setApk(apkUrl);
             }
         }

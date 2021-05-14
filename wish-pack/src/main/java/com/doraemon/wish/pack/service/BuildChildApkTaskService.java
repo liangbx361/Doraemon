@@ -7,6 +7,7 @@ import com.doraemon.wish.pack.dao.model.BuildApkTask;
 import com.doraemon.wish.pack.dao.repository.BuildApkRepository;
 import com.doraemon.wish.pack.dao.repository.BuildChildApkRepository;
 import com.doraemon.wish.pack.dao.repository.BuildChildApkTaskRepository;
+import com.doraemon.wish.pack.util.TimeUtil;
 import com.droaemon.common.util.ShellUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -96,7 +97,8 @@ public class BuildChildApkTaskService {
         }
 
         BuildApk buildApk = buildApkOptional.get();
-        String gameApkPath = buildApkPath + File.separator + buildApk.getGameId().toString();
+        String basePath = buildApk.getGameId().toString() + File.separator + TimeUtil.getFormatTime(buildApk.getCreateTime());
+        String gameApkPath = buildApkPath + File.separator + basePath;
         File motherApkFile = new File(gameApkPath, buildApk.getApk());
 
         // 构建子包
@@ -127,6 +129,7 @@ public class BuildChildApkTaskService {
         childApk.setCreateTime(new Date());
         childApkRepository.save(childApk);
 
+        task.setApkPath(basePath);
         task.setApk(childApkFile.getName());
         saveStatus(task, BuildApkTask.Status.SUCCESS);
     }
