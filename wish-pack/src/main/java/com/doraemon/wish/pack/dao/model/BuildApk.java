@@ -24,6 +24,9 @@ public class BuildApk {
     private Long channelId;
 
     @Column(nullable = false)
+    private String path;
+
+    @Column(nullable = false)
     private String apk;
 
     /**

@@ -31,7 +31,7 @@ public class BuildChildApkTaskService {
     private BuildChildApkRepository childApkRepository;
 
     @Value("${pack.build-apk-path}")
-    private String buildApkPath;
+    private String buildApkBasePath;
 
     private LinkedBlockingQueue<BuildChildApkTask> mTaskQueue;
 
@@ -48,14 +48,14 @@ public class BuildChildApkTaskService {
     }
 
     private void loadHistoryTask() {
-        List<BuildChildApkTask> buildingTasks = taskRepository.findAllByStatusEquals(BuildApkTask.Status.BUILDING);
+        List<BuildChildApkTask> buildingTasks = taskRepository.findAllByStatusEquals(BuildApkTask.BuildStatus.BUILDING);
         mTaskQueue.addAll(buildingTasks);
-        List<BuildChildApkTask> createTasks = taskRepository.findAllByStatusEquals(BuildApkTask.Status.CREATE);
+        List<BuildChildApkTask> createTasks = taskRepository.findAllByStatusEquals(BuildApkTask.BuildStatus.CREATE);
         mTaskQueue.addAll(createTasks);
     }
 
     public BuildChildApkTask create(BuildChildApkTask task) {
-        task.setStatus(BuildApkTask.Status.CREATE);
+        task.setStatus(BuildApkTask.BuildStatus.CREATE);
         task.setCreateTime(new Date());
         task = taskRepository.save(task);
 
@@ -92,13 +92,12 @@ public class BuildChildApkTaskService {
     private void runBuild(BuildChildApkTask task) {
         Optional<BuildApk> buildApkOptional = apkRepository.findById(task.getApkId());
         if(!buildApkOptional.isPresent()) {
-            saveStatus(task, BuildApkTask.Status.FAIL);
+            saveStatus(task, BuildApkTask.BuildStatus.FAIL);
             return;
         }
 
         BuildApk buildApk = buildApkOptional.get();
-        String basePath = buildApk.getGameId().toString() + File.separator + TimeUtil.getFormatTime(buildApk.getCreateTime());
-        String gameApkPath = buildApkPath + File.separator + basePath;
+        String gameApkPath = buildApkBasePath + File.separator + buildApk.getPath();
         File motherApkFile = new File(gameApkPath, buildApk.getApk());
 
         // 构建子包
@@ -109,7 +108,7 @@ public class BuildChildApkTaskService {
                 + " -apk " + motherApkFile.getAbsolutePath());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            saveStatus(task, BuildApkTask.Status.FAIL);
+            saveStatus(task, BuildApkTask.BuildStatus.FAIL);
             return;
         }
 
@@ -118,7 +117,7 @@ public class BuildChildApkTaskService {
         String childApkName = motherFileName + "_" + task.getChildId() + ".apk";
         File childApkFile = new File(gameApkPath, childApkName);
         if(!childApkFile.exists()) {
-            saveStatus(task, BuildApkTask.Status.FAIL);
+            saveStatus(task, BuildApkTask.BuildStatus.FAIL);
             return;
         }
 
@@ -129,9 +128,9 @@ public class BuildChildApkTaskService {
         childApk.setCreateTime(new Date());
         childApkRepository.save(childApk);
 
-        task.setApkPath(basePath);
+        task.setApkPath(buildApk.getPath());
         task.setApk(childApkFile.getName());
-        saveStatus(task, BuildApkTask.Status.SUCCESS);
+        saveStatus(task, BuildApkTask.BuildStatus.SUCCESS);
     }
 
     private void saveStatus(BuildChildApkTask task, String status) {

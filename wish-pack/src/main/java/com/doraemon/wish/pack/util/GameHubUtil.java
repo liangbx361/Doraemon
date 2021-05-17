@@ -14,7 +14,6 @@ public class GameHubUtil {
         config.env = game.getEnv();
         config.appId = game.getAppId();
         config.appSecret = game.getAppSecret();
-        config.debug = game.getDebug();
 
         config.plugins = new ArrayList<>();
         for(GameHubPlugin gameHubPlugin : game.getPlugins()) {

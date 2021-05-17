@@ -1,9 +1,6 @@
 package com.doraemon.wish.pack.service;
 
-import com.doraemon.wish.pack.dao.model.BuildApk;
 import com.doraemon.wish.pack.dao.model.BuildChildApk;
-import com.doraemon.wish.pack.dao.model.BuildChildApkTask;
-import com.doraemon.wish.pack.dao.repository.BuildApkRepository;
 import com.doraemon.wish.pack.dao.repository.BuildChildApkRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

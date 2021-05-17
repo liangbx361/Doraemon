@@ -52,6 +52,18 @@ public class BuildApkTask {
     private String apkName;
 
     /**
+     * 是否设置为调试模式
+     */
+    @Column()
+    private Boolean debug;
+
+    /**
+     * 调试配置
+     */
+    @Column()
+    private String debugConfig;
+
+    /**
      * 任务状态
      */
     @Column()
@@ -77,7 +89,7 @@ public class BuildApkTask {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
 
-    public interface Status {
+    public interface BuildStatus {
 
         String CREATE = "create";
 

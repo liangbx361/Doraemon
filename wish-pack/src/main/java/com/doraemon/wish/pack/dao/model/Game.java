@@ -54,8 +54,8 @@ public class Game {
     private String appSecret;
 
     /**
-     * 对接类型
-     * @see SdkIntegrationType
+     * SDK集成类型
+     * @see SdkIntegrationTypeEnum
      */
     @Column(nullable = false)
     private String sdkIntegrationType;
@@ -91,10 +91,4 @@ public class Game {
     @Type(type = "json")
     @Column(columnDefinition = "json")
     private List<GameHubPlugin> plugins = new ArrayList<>();
-
-    /**
-     * 启用调试
-     */
-    @Column()
-    private Boolean debug;
 }
